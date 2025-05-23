@@ -1,19 +1,12 @@
 # Launches multiple sitl vehicules in a PX4 SITL simulation
 import subprocess
+import os
+from jinja2 import Template
 
-DRONE_COUNT = 5
+# Template string to launch the vehicle
+template_str = """PX4_SYS_AUTOSTART={{ autostart }} PX4_GZ_MODEL={{ modelo }} ./build/px4_sitl_default/bin/px4 -i {{ instancia }}"""
+template = Template(template_str)
+template_result = template.render({"autostart": 4001, "modelo": "x500", "instancia": 1})
 
-# Starts the PX4 SITL simulation
-subprocess.Popen(["PX4_SYS_AUTOSTART=4001", "PX4_SIM_MODEL=gz_x500", "./build/px4_sitl_default/bin/px4","-i","1"])
+subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', template_result])
 
-# Loop to launch multiple drones
-for i in range(2, DRONE_COUNT + 1):
-	env = {
-		'PX4_SYS_AUTOSTART': '4001',
-		'PX4_SIM_MODEL': 'gz_x500'
-	}
-	subprocess.Popen(
-		["./build/px4_sitl_default/bin/px4", "-i", str(i)],
-		env=env,
-		cwd="/Users/jeansierraboom/Downloads/PX4-Autopilot"
-	)

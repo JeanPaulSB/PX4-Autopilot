@@ -1,6 +1,7 @@
 # Launches multiple sitl vehicules in a PX4 SITL simulation
 import subprocess
 import os
+import time
 from jinja2 import Template
 
 positions = [
@@ -25,12 +26,13 @@ template_result = template.render({
 
     })
 # Launching the first vehicle
-#subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', template_result])
+subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', template_result])
 
 template_str = """PX4_GZ_STANDALONE={{standalone}} PX4_SYS_AUTOSTART={{ autostart }} PX4_GZ_MODEL={{ model }} PX4_GZ_MODEL_POSE="{{x}},{{y}}" ./build/px4_sitl_default/bin/px4 -i {{ instance }}"""
 template = Template(template_str)
 
-for index,_ in enumerate(len(positions[1::])):
+time.sleep(5)
+for index,_ in enumerate(range(len(positions[1::]))):
     x = positions[index + 1]["x"]
     y = positions[index + 1]["y"]
     args = {
@@ -42,5 +44,6 @@ for index,_ in enumerate(len(positions[1::])):
         "y": y
     }
     template_result = template.render(**args)
-    #subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', template_result])
+    print(template_result)
+    subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', template_result])
 

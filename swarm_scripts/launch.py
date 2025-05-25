@@ -17,7 +17,7 @@ positions = [
 ]
 
 # Template string to launch the vehicle
-template_str = """PX4_SYS_AUTOSTART={{ autostart }} PX4_GZ_MODEL={{ model }} ./build/px4_sitl_default/bin/px4 -i {{ instance }}"""
+template_str = """PX4_GZ_STANDALONE=1 PX4_SYS_AUTOSTART={{ autostart }} PX4_GZ_MODEL={{ model }} ./build/px4_sitl_default/bin/px4 -i {{ instance }} """
 template = Template(template_str)
 template_result = template.render({
         "autostart": 4001,
@@ -26,6 +26,7 @@ template_result = template.render({
 
     })
 # Launching the first vehicle
+print(template_result)
 subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', template_result])
 
 template_str = """PX4_GZ_STANDALONE={{standalone}} PX4_SYS_AUTOSTART={{ autostart }} PX4_GZ_MODEL={{ model }} PX4_GZ_MODEL_POSE="{{x}},{{y}}" ./build/px4_sitl_default/bin/px4 -i {{ instance }}"""
@@ -39,11 +40,13 @@ for index,_ in enumerate(range(len(positions[1::]))):
         "standalone": 1,
         "autostart": 4001,
 	    "model": "x500",
-	    "instance": index + 1,
+	    "instance": index + 2,
         "x": x,
         "y": y
     }
     template_result = template.render(**args)
     print(template_result)
+
     subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', template_result])
 
+subprocess.Popen(['gnome-terminal', '--', 'bash', '-c',"python3", "./swarm_scripts simulation-gazebo"])

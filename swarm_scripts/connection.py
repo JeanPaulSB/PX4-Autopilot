@@ -6,7 +6,7 @@ async def run():
 
     drone = System()
     print()
-    await drone.connect(system_address="udp://0.0.0.0:14540")
+    await drone.connect(system_address="udp://192.168.1.3:14580")
     print("connected")
 
 asyncio.run(run())
